@@ -1,8 +1,8 @@
+import Item from './Item';
 import items from './inventory';
 import update_quality from './gilded_rose';
 
 describe('Gilded Rose', function () {
-
   it("should update a standard item - '+5 Dexterity Vest' - as expected (decrease quality and sell_by by 1)", function () {
     const inventory = [...items];
     const vest = inventory.find((item) => item.name === '+5 Dexterity Vest');
@@ -89,7 +89,9 @@ describe('Gilded Rose', function () {
   });
   it("should update a legendary item - 'Backstage passes to a TAFKAL80ETC concert' - as expected (more complex rules, see readme)", function () {
     const inventory = [...items];
-    const pass = inventory.find((item) => item.name === 'Backstage passes to a TAFKAL80ETC concert');
+    const pass = inventory.find(
+      (item) => item.name === 'Backstage passes to a TAFKAL80ETC concert'
+    );
     const { name, sell_in, quality } = pass;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(15);
@@ -117,6 +119,19 @@ describe('Gilded Rose', function () {
     update_quality([pass]);
     expect(pass.sell_in).toBe(-1);
     expect(pass.quality).toBe(0);
-
   });
+  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function() {
+    const inventory = [...items];
+    const conjured = inventory.find(
+      (item) => item.name === 'Conjured Mana Cake'
+    );
+    const { name, sell_in, quality } = conjured;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(3);
+    expect(quality).toBe(6);
+
+    update_quality([conjured]);
+    expect(conjured.sell_in).toBe(2);
+    expect(conjured.quality).toBe(4);
+  })
 });
