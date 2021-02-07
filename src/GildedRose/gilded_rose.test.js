@@ -1,6 +1,5 @@
-import Item from './Item';
 import items from './inventory';
-import update_quality from './gilded_rose';
+import update_quality, { update_brie } from './gilded_rose';
 
 describe('Gilded Rose', function () {
   it("should update a standard item - '+5 Dexterity Vest' - as expected (decrease quality and sell_by by 1)", function () {
@@ -25,27 +24,28 @@ describe('Gilded Rose', function () {
   it("should update brie - 'Aged Brie' - as expected (increase in quality by 1, sell_in decrease by 1)", function () {
     const inventory = [...items];
     const brie = inventory.find((item) => item.name === 'Aged Brie');
-    const { name, sell_in, quality } = brie;
+    const brieCopy = Object.assign({}, brie);
+    const { name, sell_in, quality } = brieCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(2);
     expect(quality).toBe(0);
 
-    update_quality([brie]);
-    expect(brie.sell_in).toBe(1);
-    expect(brie.quality).toBe(1);
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(1);
+    expect(brieCopy.quality).toBe(1);
 
-    update_quality([brie]);
-    expect(brie.sell_in).toBe(0);
-    expect(brie.quality).toBe(2);
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(0);
+    expect(brieCopy.quality).toBe(2);
 
     // sell_in < 0 quality increases twice as fast
-    update_quality([brie]);
-    expect(brie.sell_in).toBe(-1);
-    expect(brie.quality).toBe(4);
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(-1);
+    expect(brieCopy.quality).toBe(4);
 
-    update_quality([brie]);
-    expect(brie.sell_in).toBe(-2);
-    expect(brie.quality).toBe(6);
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(-2);
+    expect(brieCopy.quality).toBe(6);
   });
 
   it("should update a standard item - 'Elixir of the Mongoose' - as expected (decrease quality and sell_by by 1)", function () {
@@ -145,5 +145,35 @@ describe('Gilded Rose', function () {
     update_quality([conjured]);
     expect(conjured.sell_in).toBe(-1);
     expect(conjured.quality).toBe(0);
+  });
+});
+
+describe('Guilded rose refactor', function() {
+  it("should update brie - 'Aged Brie' - as expected (increase in quality by 1, sell_in decrease by 1)", function () {
+    const inventory = [...items];
+    const brie = inventory.find((item) => item.name === 'Aged Brie');
+    const brieCopy = Object.assign({}, brie);
+    const { name, sell_in, quality } = brieCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(2);
+    expect(quality).toBe(0);
+
+    update_brie(brieCopy);
+    expect(brieCopy.sell_in).toBe(1);
+    expect(brieCopy.quality).toBe(1);
+
+    update_brie(brieCopy);
+    expect(brieCopy.sell_in).toBe(0);
+    expect(brieCopy.quality).toBe(2);
+
+    // sell_in < 0 quality increases twice as fast
+    update_brie(brieCopy);
+    expect(brieCopy.sell_in).toBe(-1);
+    expect(brieCopy.quality).toBe(4);
+
+    update_brie(brieCopy);
+    expect(brieCopy.sell_in).toBe(-2);
+    expect(brieCopy.quality).toBe(6);
+
   });
 });
