@@ -65,7 +65,7 @@ export function update_conjured(item) {
 
 export function update_regular_item(item) {
   item.sell_in--;
-  const reduceBy = item.sell_in > 0 ? 1 : 2;
+  const reduceBy = item.sell_in >= 0 ? 1 : 2;
   item.quality -= reduceBy;
   return item;
 }

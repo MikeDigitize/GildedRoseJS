@@ -1,24 +1,30 @@
 import items from './inventory';
-import update_quality, { update_brie, update_backstage_pass, update_conjured, update_regular_item } from './gilded_rose';
+import update_quality, {
+  update_brie,
+  update_backstage_pass,
+  update_conjured,
+  update_regular_item,
+} from './gilded_rose';
 
 describe('Gilded Rose', function () {
   it("should update a standard item - '+5 Dexterity Vest' - as expected (decrease quality and sell_by by 1)", function () {
     const inventory = [...items];
     const vest = inventory.find((item) => item.name === '+5 Dexterity Vest');
-    const { name, sell_in, quality } = vest;
+    const vestCopy = Object.assign({}, vest);
+    const { name, sell_in, quality } = vestCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(10);
     expect(quality).toBe(20);
 
-    update_quality([vest]);
-    expect(vest.sell_in).toBe(9);
-    expect(vest.quality).toBe(19);
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(9);
+    expect(vestCopy.quality).toBe(19);
 
     // degrades twice as fast
-    vest.sell_in = 0;
-    update_quality([vest]);
-    expect(vest.sell_in).toBe(-1);
-    expect(vest.quality).toBe(17);
+    vestCopy.sell_in = 0;
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(-1);
+    expect(vestCopy.quality).toBe(17);
   });
 
   it("should update brie - 'Aged Brie' - as expected (increase in quality by 1, sell_in decrease by 1)", function () {
@@ -123,11 +129,9 @@ describe('Gilded Rose', function () {
     expect(passCopy.sell_in).toBe(-1);
     expect(passCopy.quality).toBe(0);
   });
-  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function() {
+  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function () {
     const inventory = [...items];
-    const conjured = inventory.find(
-      (item) => item.name === 'Conjured Mana Cake'
-    );
+    const conjured = inventory.find((item) => item.name === 'Conjured Mana Cake');
     const conjuredCopy = Object.assign({}, conjured);
     const { name, sell_in, quality } = conjuredCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
@@ -152,7 +156,7 @@ describe('Gilded Rose', function () {
   });
 });
 
-describe('Guilded rose refactor', function() {
+describe('Guilded rose refactor', function () {
   it("should update brie - 'Aged Brie' - as expected (increase in quality by 1, sell_in decrease by 1)", function () {
     const inventory = [...items];
     const brie = inventory.find((item) => item.name === 'Aged Brie');
@@ -178,7 +182,6 @@ describe('Guilded rose refactor', function() {
     update_brie(brieCopy);
     expect(brieCopy.sell_in).toBe(-2);
     expect(brieCopy.quality).toBe(6);
-
   });
 
   it("should update a legendary item - 'Backstage passes to a TAFKAL80ETC concert' - as expected (more complex rules, see readme)", function () {
@@ -237,11 +240,9 @@ describe('Guilded rose refactor', function() {
     expect(sulfurasCopy.sell_in).toBe(0);
     expect(sulfurasCopy.quality).toBe(80);
   });
-  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function() {
+  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function () {
     const inventory = [...items];
-    const conjured = inventory.find(
-      (item) => item.name === 'Conjured Mana Cake'
-    );
+    const conjured = inventory.find((item) => item.name === 'Conjured Mana Cake');
     const conjuredCopy = Object.assign({}, conjured);
     const { name, sell_in, quality } = conjuredCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
@@ -285,15 +286,13 @@ describe('Guilded rose refactor', function() {
   });
 });
 
-describe('Gilded rose refactored code test suite', function() {
+describe('Gilded rose Legendary item test suite', function () {
   it(`'Sulfuras, Hand of Ragnaros' never changes quality or sell_by`, function () {
     const inventory = [...items];
     const sulfuras = inventory.find((item) => item.name === 'Sulfuras, Hand of Ragnaros');
     const sulfurasCopy = Object.assign({}, sulfuras);
-    const { name, sell_in, quality } = sulfurasCopy;
-    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
-    expect(sell_in).toBe(0);
-    expect(quality).toBe(80);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
 
     // never changes
     update_quality([sulfurasCopy]);
@@ -308,4 +307,76 @@ describe('Gilded rose refactored code test suite', function() {
     expect(sulfurasCopy.sell_in).toBe(0);
     expect(sulfurasCopy.quality).toBe(80);
   });
-})
+});
+
+describe(`Gilded rose regular item test suite -
+  Regular items -
+    decrease by 1 in quality if the sell_in is greater than or equal to 0,
+    decrease by 2 in quality if the sell_in is less than 0`, function () {
+      
+  it(`decrease by 1 in quality if the sell_in is greater than or equal to 0`, function () {
+    const inventory = [...items];
+    const elixir = inventory.find((item) => item.name === 'Elixir of the Mongoose');
+    const elixirCopy = Object.assign({}, elixir);
+    expect(elixirCopy.sell_in).toBe(5);
+    expect(elixirCopy.quality).toBe(7);
+
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(4);
+    expect(elixirCopy.quality).toBe(6);
+
+    elixirCopy.sell_in = 1;
+
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(0);
+    expect(elixirCopy.quality).toBe(5);
+
+    const vest = inventory.find((item) => item.name === '+5 Dexterity Vest');
+    const vestCopy = Object.assign({}, vest);
+    expect(vestCopy.sell_in).toBe(10);
+    expect(vestCopy.quality).toBe(20);
+
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(9);
+    expect(vestCopy.quality).toBe(19);
+
+    vestCopy.sell_in = 1;
+    
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(0);
+    expect(vestCopy.quality).toBe(18)
+  });
+
+  it(`decrease by 2 in quality if the sell_in is less than 0`, function () {
+    const inventory = [...items];
+    const elixir = inventory.find((item) => item.name === 'Elixir of the Mongoose');
+    const elixirCopy = Object.assign({}, elixir);
+    expect(elixirCopy.sell_in).toBe(5);
+    expect(elixirCopy.quality).toBe(7);
+
+    elixirCopy.sell_in = 0;
+
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(-1);
+    expect(elixirCopy.quality).toBe(5);
+
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(-2);
+    expect(elixirCopy.quality).toBe(3);
+
+    const vest = inventory.find((item) => item.name === '+5 Dexterity Vest');
+    const vestCopy = Object.assign({}, vest);
+    expect(vestCopy.sell_in).toBe(10);
+    expect(vestCopy.quality).toBe(20);
+
+    vestCopy.sell_in = 0;
+
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(-1);
+    expect(vestCopy.quality).toBe(18);
+    
+    update_quality([vestCopy]);
+    expect(vestCopy.sell_in).toBe(-2);
+    expect(vestCopy.quality).toBe(16)
+  });
+});
