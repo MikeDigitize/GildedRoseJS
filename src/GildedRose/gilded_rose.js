@@ -9,24 +9,10 @@ export default function update_quality(items = []) {
     if (items[i].name === 'Sulfuras, Hand of Ragnaros') {
       return update_sulfuras(items[i]);
     }
-    if (items[i].quality > 0) {
-      if(items[i].name === 'Conjured Mana Cake') {
-        items[i].quality = items[i].quality - 2
-      } else {
-        items[i].quality = items[i].quality - 1
-      }
+    if(items[i].name === 'Conjured Mana Cake') {
+      return update_conjured(items[i]);
     }
-    else if (items[i].quality < 50) {
-      items[i].quality = items[i].quality + 1
-    }
- 
-    items[i].sell_in = items[i].sell_in - 1;
-    
-    if (items[i].sell_in < 0) {
-      if (items[i].quality > 0) {
-        items[i].quality = items[i].quality - 1;
-      }
-    }
+    return update_regular_item(items[i]);
   }
 }
 
@@ -36,6 +22,9 @@ export function update_brie(item) {
   if(quality < 50) {
     const increaseBy = item.sell_in >= 0 ? 1 : 2;
     item.quality += increaseBy;
+  }
+  if(item.quality > 50) {
+    item.quality = 50;
   }
   return item;
 }
@@ -54,10 +43,29 @@ export function update_backstage_pass(item) {
   else {
     item.quality = 0;
   }
+  if(item.quality > 50) {
+    item.quality = 50;
+  }
   item.sell_in--;
   return item;
 }
 
 export function update_sulfuras(item) {
+  return item;
+}
+
+export function update_conjured(item) {
+  item.sell_in--;
+  item.quality -= 2;
+  if(item.quality < 0) {
+    item.quality = 0;
+  }
+  return item;
+}
+
+export function update_regular_item(item) {
+  item.sell_in--;
+  const reduceBy = item.sell_in > 0 ? 1 : 2;
+  item.quality -= reduceBy;
   return item;
 }

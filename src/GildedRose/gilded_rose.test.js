@@ -1,5 +1,5 @@
 import items from './inventory';
-import update_quality, { update_brie, update_backstage_pass } from './gilded_rose';
+import update_quality, { update_brie, update_backstage_pass, update_conjured, update_regular_item } from './gilded_rose';
 
 describe('Gilded Rose', function () {
   it("should update a standard item - '+5 Dexterity Vest' - as expected (decrease quality and sell_by by 1)", function () {
@@ -51,19 +51,20 @@ describe('Gilded Rose', function () {
   it("should update a standard item - 'Elixir of the Mongoose' - as expected (decrease quality and sell_by by 1)", function () {
     const inventory = [...items];
     const elixir = inventory.find((item) => item.name === 'Elixir of the Mongoose');
-    const { name, sell_in, quality } = elixir;
+    const elixirCopy = Object.assign({}, elixir);
+    const { name, sell_in, quality } = elixirCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(5);
     expect(quality).toBe(7);
 
-    update_quality([elixir]);
-    expect(elixir.sell_in).toBe(4);
-    expect(elixir.quality).toBe(6);
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(4);
+    expect(elixirCopy.quality).toBe(6);
 
-    elixir.sell_in = 0;
-    update_quality([elixir]);
-    expect(elixir.sell_in).toBe(-1);
-    expect(elixir.quality).toBe(4);
+    elixirCopy.sell_in = 0;
+    update_quality([elixirCopy]);
+    expect(elixirCopy.sell_in).toBe(-1);
+    expect(elixirCopy.quality).toBe(4);
   });
 
   it("should update a legendary item - 'Sulfuras, Hand of Ragnaros' - as expected (no decrease quality or sell_by)", function () {
@@ -127,26 +128,27 @@ describe('Gilded Rose', function () {
     const conjured = inventory.find(
       (item) => item.name === 'Conjured Mana Cake'
     );
-    const { name, sell_in, quality } = conjured;
+    const conjuredCopy = Object.assign({}, conjured);
+    const { name, sell_in, quality } = conjuredCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(3);
     expect(quality).toBe(6);
 
-    update_quality([conjured]);
-    expect(conjured.sell_in).toBe(2);
-    expect(conjured.quality).toBe(4);
+    update_quality([conjuredCopy]);
+    expect(conjuredCopy.sell_in).toBe(2);
+    expect(conjuredCopy.quality).toBe(4);
 
-    update_quality([conjured]);
-    expect(conjured.sell_in).toBe(1);
-    expect(conjured.quality).toBe(2);
+    update_quality([conjuredCopy]);
+    expect(conjuredCopy.sell_in).toBe(1);
+    expect(conjuredCopy.quality).toBe(2);
 
-    update_quality([conjured]);
-    expect(conjured.sell_in).toBe(0);
-    expect(conjured.quality).toBe(0);
+    update_quality([conjuredCopy]);
+    expect(conjuredCopy.sell_in).toBe(0);
+    expect(conjuredCopy.quality).toBe(0);
 
-    update_quality([conjured]);
-    expect(conjured.sell_in).toBe(-1);
-    expect(conjured.quality).toBe(0);
+    update_quality([conjuredCopy]);
+    expect(conjuredCopy.sell_in).toBe(-1);
+    expect(conjuredCopy.quality).toBe(0);
   });
 });
 
@@ -234,5 +236,51 @@ describe('Guilded rose refactor', function() {
     update_quality(sulfurasCopy);
     expect(sulfurasCopy.sell_in).toBe(0);
     expect(sulfurasCopy.quality).toBe(80);
+  });
+  it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function() {
+    const inventory = [...items];
+    const conjured = inventory.find(
+      (item) => item.name === 'Conjured Mana Cake'
+    );
+    const conjuredCopy = Object.assign({}, conjured);
+    const { name, sell_in, quality } = conjuredCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(3);
+    expect(quality).toBe(6);
+
+    update_conjured(conjuredCopy);
+    expect(conjuredCopy.sell_in).toBe(2);
+    expect(conjuredCopy.quality).toBe(4);
+
+    update_conjured(conjuredCopy);
+    expect(conjuredCopy.sell_in).toBe(1);
+    expect(conjuredCopy.quality).toBe(2);
+
+    update_conjured(conjuredCopy);
+    expect(conjuredCopy.sell_in).toBe(0);
+    expect(conjuredCopy.quality).toBe(0);
+
+    update_conjured(conjuredCopy);
+    expect(conjuredCopy.sell_in).toBe(-1);
+    expect(conjuredCopy.quality).toBe(0);
+  });
+
+  it("should update a standard item - 'Elixir of the Mongoose' - as expected (decrease quality and sell_by by 1)", function () {
+    const inventory = [...items];
+    const elixir = inventory.find((item) => item.name === 'Elixir of the Mongoose');
+    const elixirCopy = Object.assign({}, elixir);
+    const { name, sell_in, quality } = elixirCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(5);
+    expect(quality).toBe(7);
+
+    update_regular_item(elixirCopy);
+    expect(elixirCopy.sell_in).toBe(4);
+    expect(elixirCopy.quality).toBe(6);
+
+    elixirCopy.sell_in = 0;
+    update_regular_item(elixirCopy);
+    expect(elixirCopy.sell_in).toBe(-1);
+    expect(elixirCopy.quality).toBe(4);
   });
 });
