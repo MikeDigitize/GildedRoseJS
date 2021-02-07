@@ -1,5 +1,5 @@
 import items from './inventory';
-import update_quality, { update_brie } from './gilded_rose';
+import update_quality, { update_brie, update_backstage_pass } from './gilded_rose';
 
 describe('Gilded Rose', function () {
   it("should update a standard item - '+5 Dexterity Vest' - as expected (decrease quality and sell_by by 1)", function () {
@@ -92,33 +92,34 @@ describe('Gilded Rose', function () {
     const pass = inventory.find(
       (item) => item.name === 'Backstage passes to a TAFKAL80ETC concert'
     );
-    const { name, sell_in, quality } = pass;
+    const passCopy = Object.assign({}, pass);
+    const { name, sell_in, quality } = passCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(15);
     expect(quality).toBe(20);
 
     // sell_in > 10
-    update_quality([pass]);
-    expect(pass.sell_in).toBe(14);
-    expect(pass.quality).toBe(21);
+    update_quality([passCopy]);
+    expect(passCopy.sell_in).toBe(14);
+    expect(passCopy.quality).toBe(21);
 
     // sell in <= 10
-    pass.sell_in = 10;
-    update_quality([pass]);
-    expect(pass.sell_in).toBe(9);
-    expect(pass.quality).toBe(23);
+    passCopy.sell_in = 10;
+    update_quality([passCopy]);
+    expect(passCopy.sell_in).toBe(9);
+    expect(passCopy.quality).toBe(23);
 
     // sell in <= 5
-    pass.sell_in = 5;
-    update_quality([pass]);
-    expect(pass.sell_in).toBe(4);
-    expect(pass.quality).toBe(26);
+    passCopy.sell_in = 5;
+    update_quality([passCopy]);
+    expect(passCopy.sell_in).toBe(4);
+    expect(passCopy.quality).toBe(26);
 
     // sell in <= 0
-    pass.sell_in = 0;
-    update_quality([pass]);
-    expect(pass.sell_in).toBe(-1);
-    expect(pass.quality).toBe(0);
+    passCopy.sell_in = 0;
+    update_quality([passCopy]);
+    expect(passCopy.sell_in).toBe(-1);
+    expect(passCopy.quality).toBe(0);
   });
   it('should update a conjured item - Conjured Mana Cake - as expected (degrades in quality twice as fast as other items)', function() {
     const inventory = [...items];
@@ -175,5 +176,40 @@ describe('Guilded rose refactor', function() {
     expect(brieCopy.sell_in).toBe(-2);
     expect(brieCopy.quality).toBe(6);
 
+  });
+
+  it("should update a legendary item - 'Backstage passes to a TAFKAL80ETC concert' - as expected (more complex rules, see readme)", function () {
+    const inventory = [...items];
+    const pass = inventory.find(
+      (item) => item.name === 'Backstage passes to a TAFKAL80ETC concert'
+    );
+    const passCopy = Object.assign({}, pass);
+    const { name, sell_in, quality } = passCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(15);
+    expect(quality).toBe(20);
+
+    // sell_in > 10
+    update_backstage_pass(passCopy);
+    expect(passCopy.sell_in).toBe(14);
+    expect(passCopy.quality).toBe(21);
+
+    // sell in <= 10
+    passCopy.sell_in = 10;
+    update_backstage_pass(passCopy);
+    expect(passCopy.sell_in).toBe(9);
+    expect(passCopy.quality).toBe(23);
+
+    // sell in <= 5
+    passCopy.sell_in = 5;
+    update_backstage_pass(passCopy);
+    expect(passCopy.sell_in).toBe(4);
+    expect(passCopy.quality).toBe(26);
+
+    // sell in <= 0
+    passCopy.sell_in = 0;
+    update_backstage_pass(passCopy);
+    expect(passCopy.sell_in).toBe(-1);
+    expect(passCopy.quality).toBe(0);
   });
 });
