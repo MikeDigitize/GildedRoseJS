@@ -69,23 +69,24 @@ describe('Gilded Rose', function () {
   it("should update a legendary item - 'Sulfuras, Hand of Ragnaros' - as expected (no decrease quality or sell_by)", function () {
     const inventory = [...items];
     const sulfuras = inventory.find((item) => item.name === 'Sulfuras, Hand of Ragnaros');
-    const { name, sell_in, quality } = sulfuras;
+    const sulfurasCopy = Object.assign({}, sulfuras);
+    const { name, sell_in, quality } = sulfurasCopy;
     [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
     expect(sell_in).toBe(0);
     expect(quality).toBe(80);
 
     // never changes
-    update_quality([sulfuras]);
-    expect(sulfuras.sell_in).toBe(0);
-    expect(sulfuras.quality).toBe(80);
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
 
-    update_quality([sulfuras]);
-    expect(sulfuras.sell_in).toBe(0);
-    expect(sulfuras.quality).toBe(80);
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
 
-    update_quality([sulfuras]);
-    expect(sulfuras.sell_in).toBe(0);
-    expect(sulfuras.quality).toBe(80);
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
   });
   it("should update a legendary item - 'Backstage passes to a TAFKAL80ETC concert' - as expected (more complex rules, see readme)", function () {
     const inventory = [...items];
@@ -211,5 +212,27 @@ describe('Guilded rose refactor', function() {
     update_backstage_pass(passCopy);
     expect(passCopy.sell_in).toBe(-1);
     expect(passCopy.quality).toBe(0);
+  });
+  it("should update a legendary item - 'Sulfuras, Hand of Ragnaros' - as expected (no decrease quality or sell_by)", function () {
+    const inventory = [...items];
+    const sulfuras = inventory.find((item) => item.name === 'Sulfuras, Hand of Ragnaros');
+    const sulfurasCopy = Object.assign({}, sulfuras);
+    const { name, sell_in, quality } = sulfurasCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(0);
+    expect(quality).toBe(80);
+
+    // never changes
+    update_quality(sulfurasCopy);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
+
+    update_quality(sulfurasCopy);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
+
+    update_quality(sulfurasCopy);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
   });
 });
