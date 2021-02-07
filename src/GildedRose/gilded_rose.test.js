@@ -284,3 +284,28 @@ describe('Guilded rose refactor', function() {
     expect(elixirCopy.quality).toBe(4);
   });
 });
+
+describe('Gilded rose refactored code test suite', function() {
+  it(`'Sulfuras, Hand of Ragnaros' never changes quality or sell_by`, function () {
+    const inventory = [...items];
+    const sulfuras = inventory.find((item) => item.name === 'Sulfuras, Hand of Ragnaros');
+    const sulfurasCopy = Object.assign({}, sulfuras);
+    const { name, sell_in, quality } = sulfurasCopy;
+    [name, sell_in, quality].forEach((item) => expect(item).toBeDefined());
+    expect(sell_in).toBe(0);
+    expect(quality).toBe(80);
+
+    // never changes
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
+
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
+
+    update_quality([sulfurasCopy]);
+    expect(sulfurasCopy.sell_in).toBe(0);
+    expect(sulfurasCopy.quality).toBe(80);
+  });
+})
