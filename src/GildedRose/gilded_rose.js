@@ -49,3 +49,14 @@ export default function update_quality(items = []) {
     }
   }
 }
+
+export function update_brie(item) {
+  const { sell_in, quality } = item;
+  if(sell_in > 0) {
+    item.sell_in--;
+  }
+  if(quality < 50) {
+    item.quality++;
+  }
+  return item;
+}

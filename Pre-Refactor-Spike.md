@@ -21,3 +21,16 @@ and by 3 when there are 5 days or less but quality drops to 0 after sell_in is l
 ### Development constraints
 - Cannot change Item class - three properties; name, sell_in, quality
 - Cannot change Items property - array
+
+## Program flow
+
+- if NOT `brie` or `backstage pass`
+    - if `quality > 0`
+    - ignore `sulfuras`
+    - increase `quality`
+    - specific `conjured` logic
+
+- if `brie` or `backstage pass`
+    - if `quality < 50`
+    - increase `quality`
+    - specific `backstage pass` logic
