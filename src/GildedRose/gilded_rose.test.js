@@ -380,3 +380,70 @@ describe(`Gilded rose regular item test suite -
     expect(vestCopy.quality).toBe(16)
   });
 });
+
+describe(`Guilded rose Aged Brie test suite -
+  Brie -
+    increases by 1 in quality if the sell_in is greater than or equal to 0
+    increases by 2 in quality if the sell_in is less than 0
+    does not increase in quality past 50`, function () {
+
+  it("should increases by 1 in quality if the sell_in is greater than or equal to 0", function () {
+    const inventory = [...items];
+    const brie = inventory.find((item) => item.name === 'Aged Brie');
+    const brieCopy = Object.assign({}, brie);
+    expect(brieCopy.sell_in).toBe(2);
+    expect(brieCopy.quality).toBe(0);
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(1);
+    expect(brieCopy.quality).toBe(1);
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(0);
+    expect(brieCopy.quality).toBe(2);
+
+  });
+  it("should increases by 2 in quality if the sell_in is less than 0", function () {
+    const inventory = [...items];
+    const brie = inventory.find((item) => item.name === 'Aged Brie');
+    const brieCopy = Object.assign({}, brie);
+    expect(brieCopy.sell_in).toBe(2);
+    expect(brieCopy.quality).toBe(0);
+
+    brieCopy.sell_in = 0;
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(-1);
+    expect(brieCopy.quality).toBe(2);
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(-2);
+    expect(brieCopy.quality).toBe(4);
+
+  });
+
+  it("should have a maximum quality of 50", function () {
+    const inventory = [...items];
+    const brie = inventory.find((item) => item.name === 'Aged Brie');
+    const brieCopy = Object.assign({}, brie);
+    
+    expect(brieCopy.sell_in).toBe(2);
+    expect(brieCopy.quality).toBe(0);
+
+    brieCopy.quality = 49;
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(1);
+    expect(brieCopy.quality).toBe(50);
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(0);
+    expect(brieCopy.quality).toBe(50);
+
+    update_quality([brieCopy]);
+    expect(brieCopy.sell_in).toBe(-1);
+    expect(brieCopy.quality).toBe(50);
+
+  });
+
+});
