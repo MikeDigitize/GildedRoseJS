@@ -133,5 +133,17 @@ describe('Gilded Rose', function () {
     update_quality([conjured]);
     expect(conjured.sell_in).toBe(2);
     expect(conjured.quality).toBe(4);
-  })
+
+    update_quality([conjured]);
+    expect(conjured.sell_in).toBe(1);
+    expect(conjured.quality).toBe(2);
+
+    update_quality([conjured]);
+    expect(conjured.sell_in).toBe(0);
+    expect(conjured.quality).toBe(0);
+
+    update_quality([conjured]);
+    expect(conjured.sell_in).toBe(-1);
+    expect(conjured.quality).toBe(0);
+  });
 });
