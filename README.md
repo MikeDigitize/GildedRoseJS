@@ -4,10 +4,10 @@
 Adding a new feature to a giant unwieldy function with no tests in JavaScript. Yikes!
 
 ### Approach
-Four branches -
-  - Spike: Digging into how the feature works, making notes, then retrofitting tests to give confidence when making changes
-  - Spike2: Adding the new feature to existing code, with tests
-  - Refactor: Taking a feature of the requirement of the huge function, abstracting the logic out, then refactoring that aspect of the big function and tests pass (repeat)
+Tackled this across four branches -
+  - Spike: Start by digging into how the feature works and retrofitting tests to give confidence when making changes
+  - Spike2: Add the new feature requirement to existing code, with tests
+  - Refactor: Isolate an aspect of the functionality, abstracting the logic out and refactoring with tests (repeat)
   - Tidy: Finalise test suite so every feature is tested across every requirement (tidy branch then merged back into master upon completion)
 
 ### Spec
